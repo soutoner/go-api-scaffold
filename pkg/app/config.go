@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"strconv"
@@ -9,7 +10,13 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	EnvLocal  = "local"
+	EnvDocker = "docker"
+)
+
 type Config struct {
+	Env      string
 	LogLevel slog.Level
 	Port     int
 	DB       DBConfig
@@ -21,7 +28,11 @@ type DBConfig struct {
 }
 
 func LoadConfig() (*Config, error) {
-	err := godotenv.Load()
+	// We check first if we are in env that provides this value out of the box
+	env := os.Getenv("ENV")
+
+	envFiles := getEnvFiles(env)
+	err := godotenv.Load(envFiles...)
 
 	if err != nil {
 		return nil, err
@@ -35,11 +46,30 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 
-	return &Config{LogLevel: logLevel, Port: port, DB: dbConfig()}, nil
+	return &Config{Env: os.Getenv("ENV"), LogLevel: logLevel, Port: port, DB: dbConfig()}, nil
+}
+
+func getEnvFiles(env string) []string {
+	envFiles := []string{".env"}
+	switch env {
+	case EnvDocker:
+		envFiles = append(envFiles, ".env.docker")
+	}
+
+	return envFiles
 }
 
 func dbConfig() DBConfig {
-	return DBConfig{Name: os.Getenv("DB_NAME"), Url: os.Getenv("DB_URL")}
+	host := os.Getenv("DB_HOST")
+	dbName := os.Getenv("DB_NAME")
+	user := os.Getenv("DB_USER")
+	pass := os.Getenv("DB_PASS")
+
+	return DBConfig{Name: dbName, Url: buildDbUrl(user, pass, host, dbName)}
+}
+
+func buildDbUrl(user string, pass string, host string, dbName string) string {
+	return fmt.Sprintf("postgres://%s:%s@%s:5432/%s?sslmode=disable", user, pass, host, dbName)
 }
 
 func parseLogLevel(osLogLevel string) slog.Level {

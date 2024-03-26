@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS employees (
 	updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT employees_pkey PRIMARY KEY (id),
 	CONSTRAINT employees_email_unique UNIQUE (email),
-	CONSTRAINT employees_office_id_foreign FOREIGN KEY (office_id) REFERENCES offices(id) ON DELETE CASCADE,
+	CONSTRAINT employees_office_id_foreign FOREIGN KEY (office_id) REFERENCES offices(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS employees_languages (

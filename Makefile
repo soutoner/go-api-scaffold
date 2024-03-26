@@ -21,7 +21,8 @@ build/debug:
 run: build
 	${MAIN_BIN}
 
-run/dev:
+run/local: docker/start
+	docker compose stop api
 	go run ${MAIN_CMD}
 
 test:
@@ -29,7 +30,7 @@ test:
 
 ## Docker
 docker/start:
-	docker compose up -d
+	docker compose --env-file .env --env-file .env.docker up -d
 
 docker/stop:
 	docker compose stop
@@ -57,7 +58,3 @@ db/generate:
 
 seed:
 	go run cmd/seeder/seeder.go
-
-# Util to wait for a command to completely finish (e.g. Docker spinning up a database)
-sleep:
-	@sleep 1

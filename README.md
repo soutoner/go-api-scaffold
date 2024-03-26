@@ -1,6 +1,6 @@
 # Go REST API scaffold
 
-Example of minimal Go REST API scaffold. It includes:
+Example of minimal Go REST API. It includes:
 
 - REST Server (chi)
   - [x] JSON serialization
@@ -27,7 +27,7 @@ Example of minimal Go REST API scaffold. It includes:
 - Dev experience
   - [x] Fully dockerized
   - [x] Live reloading (air)
-  - [ ] VsCode seamless integration
+  - [ ] VSCode seamless integration
 
 ## Outline
 
@@ -38,19 +38,26 @@ Example of minimal Go REST API scaffold. It includes:
 - Prometheus `http://localhost:9090`
 - Grafana `http://localhost:3000`
 
-## Required tools
-
-- Docker Engine - https://docs.docker.com/engine/install/
-- Go version >= 1.22 https://go.dev/doc/install
-- `migrate` CLI - https://github.com/golang-migrate/migrate/tree/master/cmd/migrate#migrate-cli
-- `sqlc` CLI - https://docs.sqlc.dev/en/stable/overview/install.html
-
-## Quick Start
+## Quick Start (Docker)
 
 ```shell
-$ make init run/dev           # If it's the first time
-$ make docker/start run/dev   # Otherwise (no migrations to run)
+$ make docker/start
 ```
+
+## Starting locally
+
+```shell
+$ make run/local
+```
+
+## Debug mode
+
+```shell
+$ make docker/start         # Ensure that needed containers (e.g. DB) are available
+$ docker compose stop api   # Stop dockerized app so ports are not conflicting
+```
+
+Use the VSCode launch configuration for debug mode. It will first build the app for debug, and then run it with a debugger session attached.
 
 ## References
 
@@ -76,6 +83,6 @@ Afterwards:
 
 ### Useful commands
 
-- Reset all docker containers
+- Reset all docker containers (removes volumes)
 
 `$ make docker/reset`
