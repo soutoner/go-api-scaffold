@@ -41,6 +41,7 @@ Example of minimal Go REST API. It includes:
 ## Quick Start (Docker)
 
 ```shell
+$ cp .env.example .env
 $ make docker/start
 ```
 
